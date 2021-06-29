@@ -116,7 +116,6 @@ var fight = function(enemy) {
   }
 };
 
-
 // function to start a new game
 var startGame = function() {
   // reset player stats
@@ -161,42 +160,51 @@ var startGame = function() {
     }
   }
 
-  // after the loop ends, player is either out of health or enemies to fight, so run the endGame function
+  // after loop ends, we are either out of player.health or enemies to fight, so run the endGame function
   endGame();
-
 };
 
 // function to end the entire game
-var endGame = function () {
-  // if player still alive, player wins! 
-  if (playerInfo.health > 0) {
-    window.alert("Great job, you've survived the game! You now have a score of " + playerInfo.money + ".");
-  } else {
-    window.alert("You've lost your robot in battle.");
+var endGame = function() {
+  window.alert("The game has now ended. Let's see how you did!");
+
+  // check localStorage for high score, if it's not there, use 0
+  var highScore = localStorage.getItem("highscore");
+  if (highScore === null) {
+    highScore = 0;
   }
 
+  // if player has more money than the high score, player has new high score!
+  if (playerInfo.money > highScore) {
+    localStorage.setItem("highscore", playerInfo.money);
+    localStorage.setItem("name", playerInfo.name);
 
+    alert(playerInfo.name + " now has the high score of " + playerInfo.money + "!");
+  } else {
+    alert(playerInfo.name + " did not beat the high score of " + highScore + ". Maybe next time!");
+  }
 
+  // ask player if they'd like to play again
+  var playAgainConfirm = window.confirm("Would you like to play again?");
 
-  var playerAgainConfirm = window.confirm("Would you like to play again?");
-
-  if (playerAgainConfirm) {
-    // restart the game
+  if (playAgainConfirm) {
     startGame();
   } else {
-    window.alert("Thank you for playing Robot Gladiators! come back soon!");
+    window.alert("Thank you for playing Robot Gladiators! Come back soon!");
   }
 };
 
-// go to shop betweem battles function
-var shop = function () {
-  // ask player what they'd like to do 
+// go to shop between battles function
+var shop = function() {
+  // ask player what they'd like to do
   var shopOptionPrompt = window.prompt(
     "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one 1 for REFILL, 2 for UPGRADE, or 3 for LEAVE."
   );
 
-  // use switch to carry out action
+  // convert answer from prompt to an actual number
   shopOptionPrompt = parseInt(shopOptionPrompt);
+
+  // use switch case to carry out action
   switch (shopOptionPrompt) {
     case 1:
       playerInfo.refillHealth();
@@ -214,41 +222,43 @@ var shop = function () {
   }
 };
 
-// funtions to set name 
+// function to set name
 var getPlayerName = function() {
   var name = "";
 
-  while(name === "" || name === null) { 
-  name = prompt("What is your robot's name?");
+  while (name === "" || name === null) {
+    name = prompt("What is your robot's name?");
   }
   console.log("Your robot's name is " + name);
   return name;
 };
 
-/* end game functions */
+/* END GAME FUNCTIONS */
 
-/* game information / variables */
-// player information
+/* GAME INFORMATION / VARIABLES */
+
 var playerInfo = {
   name: getPlayerName(),
   health: 100,
   attack: 10,
   money: 10,
-  reset: function () {
+  reset: function() {
     this.health = 100;
     this.money = 10;
     this.attack = 10;
-  }, // comma!
-  refillHealth: function () {
+  },
+  refillHealth: function() {
     if (this.money >= 7) {
+      window.alert("Refilling player's health by 20 for 7 dollars.");
       this.health += 20;
       this.money -= 7;
     } else {
       window.alert("You don't have enough money!");
     }
-  }, // comma!
-  upgradeAttack: function () {
+  },
+  upgradeAttack: function() {
     if (this.money >= 7) {
+      window.alert("Upgrading player's attack by 6 for 7 dollars.");
       this.attack += 6;
       this.money -= 7;
     } else {
@@ -272,12 +282,7 @@ var enemyInfo = [
   }
 ];
 
-console.log(enemyInfo);
-console.log(enemyInfo[0]);
-console.log(enemyInfo[0].name);
-console.log(enemyInfo[0]['attack']);
+/* END GAME INFORMATION / VARIABLES */
 
-/* end game information / variables*/
-
-// RUN GAME
+/* RUN GAME */
 startGame();
